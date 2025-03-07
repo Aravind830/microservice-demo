@@ -24,17 +24,18 @@ public class ProductController {
     }
 
     @PostMapping("/save")
-    public Product create(@RequestBody Product product){
-        return productService.create(product);
+    public ResponseEntity<Product> create(@RequestBody Product product){
+            return ResponseEntity.ok(productService.create(product));
     }
 
     @PatchMapping("/update/{productId}")
-    public ResponseEntity<Product> updateById(@PathVariable Long productId, @RequestBody Product product){
+    public ResponseEntity<Product> updateById(@PathVariable Long productId,
+                                              @RequestBody Product product){
         return productService.updateById(productId,product);
     }
 
     @DeleteMapping("/remove/{productId}")
-    public String removeById(@PathVariable Long productId){
-        return productService.remove(productId);
+    public ResponseEntity<String> removeById(@PathVariable Long productId){
+            return ResponseEntity.ok(productService.remove(productId));
     }
 }

@@ -48,8 +48,8 @@ public class AuthController {
         Auth user=new Auth();
         user.setUserName(auth.getUserName());
         user.setPassword(passwordEncoder.encode(auth.getPassword()));
-        List<Roles> userRoles=auth.getRoles();
-        for (Roles role:userRoles){
+        List<Roles> userRoles=new ArrayList<>();
+        for (Roles role:auth.getRoles()){
             Roles rol=rolesRepository.findByRoleName(role.getRoleName())
                     .orElseThrow(()->new UsernameNotFoundException("Role Not Found"));
             userRoles.add(rol);

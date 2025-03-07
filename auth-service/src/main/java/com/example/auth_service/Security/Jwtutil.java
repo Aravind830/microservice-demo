@@ -3,6 +3,7 @@ package com.example.auth_service.Security;
 import com.example.auth_service.Entity.Auth;
 import com.example.auth_service.Entity.Roles;
 import com.example.auth_service.Repository.AuthRepository;
+import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
@@ -33,11 +34,35 @@ public class Jwtutil {
         return Jwts.builder()
                 .setSubject(userName)
                 .claim("roles",rolesList.stream()
-                        .map(roles1 -> roles1.getRoleName())
+                        .map(Roles::getRoleName)
                         .collect(Collectors.joining(",")))
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(new Date().getTime() + jwtExpire))
                 .signWith(secretKey, SignatureAlgorithm.HS512)
                 .compact();
+    }
+
+    public String getNameByToken(String token){
+        return Jwts
+                .parserBuilder()
+                .setSigningKey(secretKey)
+                .build()
+                .parseClaimsJws(token)
+                .getBody()
+                .getSubject();
+    }
+
+//    public List<String> getRolesByToken(String token){
+//        String projects= Jwts.parserBuilder().setSigningKey(secretKey).build().parseClaimsJws(token).getBody().get("roles",String.class);
+//        return List.of(projects);
+//    }
+
+    public Boolean isValidate(String token){
+        try{
+            Jwts.parserBuilder().setSigningKey(secretKey).build().parseClaimsJws(token);
+            return true;
+        }catch (JwtException | IllegalArgumentException e){
+            return false;
+        }
     }
 }
